@@ -1,0 +1,3 @@
+[submodule "smartbe"]
+	path = smartbe
+	url = https://github.com/kaliczp/smartbe
