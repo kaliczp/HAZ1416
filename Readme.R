@@ -17,5 +17,10 @@ fulldir.df[different.setup, "channel"]  <- 0
 ## git submodule add https://github.com/kaliczp/smartbe
 
 source("smartbe/smartbe.R")
-smartbe(paste0(fulldir.df[1, "year"], "/konvertalt/", fulldir.df[1, "fname"]), channel = fulldir.df[1, "channel"])
+library(xts)
+
+tti <- 1
+ttmp <- smartbe(paste0(fulldir.df[tti, "year"], "/konvertalt/", fulldir.df[tti, "fname"]), channel = fulldir.df[tti, "channel"])
+plot(xts(ttmp[,2], as.POSIXct(gsub("\\.","-",ttmp[,1]))))
+
 smartbe(paste0(fulldir.df[1, "year"], "/konvertalt/", fulldir.df[2, "fname"]), channel = fulldir.df[1, "channel"])
