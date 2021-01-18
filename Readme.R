@@ -8,7 +8,6 @@ for(ttyear in 2014:2016) {
                                 )
     fulldir.df <- rbind(fulldir.df, dircontent.df)
 }
-
 different.setup <- c(1,3:nrow(fulldir.df))
 fulldir.df <- cbind(fulldir.df, channel = 1)
 fulldir.df[different.setup, "channel"]  <- 0
@@ -21,10 +20,17 @@ library(xts)
 
 ttmp <- smartbe(paste0(fulldir.df[1, "year"], "/konvertalt/", fulldir.df[1, "fname"]), channel = fulldir.df[1, "channel"])
 haz.xts <- xts(ttmp[,2], as.POSIXct(gsub("\\.","-",ttmp[,1])))
-
-tti <- 2
-print(tti)
-ttmp <- smartbe(paste0(fulldir.df[tti, "year"], "/konvertalt/", fulldir.df[tti, "fname"]), channel = fulldir.df[tti, "channel"])
-haz.xts <- c(haz.xts, xts(ttmp[,2], as.POSIXct(gsub("\\.","-",ttmp[,1]))))
+for(tti in 2:nrow(fulldir.df)) {
+    print(tti)
+    ttmp <- smartbe(paste0(fulldir.df[tti, "year"], "/konvertalt/", fulldir.df[tti, "fname"]), channel = fulldir.df[tti, "channel"])
+    if(length(grep("[a-z]", ttmp[1,"DateTime"])) > 0) {
+        ## Character date format
+        ttimestamp <- as.POSIXct(strptime(head(ttmp[,1]), format = "%Y. %B %d. %T"))
+    } else {
+        ## Numeric date format
+        ttimestamp <- as.POSIXct(gsub("\\.","-",ttmp[,1]))
+    haz.xts <- c(haz.xts, xts(ttmp[,2], ttimestamp))
+    }
+}
 
 plot(haz.xts)
