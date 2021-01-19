@@ -11,6 +11,8 @@ for(ttyear in 2014:2016) {
 different.setup <- c(1,3:nrow(fulldir.df))
 fulldir.df <- cbind(fulldir.df, channel = 1)
 fulldir.df[different.setup, "channel"]  <- 0
+## End of year duplication removed
+fulldir.df <- fulldir.df[!(fulldir.df[,"fname"] == "HAZc31.TXT" & fulldir.df[,"year"] == 2015),]
 
 ## Submodule added
 ## git submodule add https://github.com/kaliczp/smartbe
