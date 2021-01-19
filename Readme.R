@@ -19,17 +19,19 @@ source("smartbe/smartbe.R")
 library(xts)
 
 ttmp <- smartbe(paste0(fulldir.df[1, "year"], "/konvertalt/", fulldir.df[1, "fname"]), channel = fulldir.df[1, "channel"])
-haz.xts <- xts(ttmp[,2], as.POSIXct(gsub("\\.","-",ttmp[,1])))
+ttdata <- data.frame(Stage = ttmp[,2], Filenr = 1)
+haz.xts <- xts(ttdata, as.POSIXct(gsub("\\.","-",ttmp[,1])))
 for(tti in 2:nrow(fulldir.df)) {
     print(tti)
     ttmp <- smartbe(paste0(fulldir.df[tti, "year"], "/konvertalt/", fulldir.df[tti, "fname"]), channel = fulldir.df[tti, "channel"])
+    ttdata <- data.frame(Stage = ttmp[,2], Filenr = tti)
     if(length(grep("[a-z]", ttmp[1,"DateTime"])) > 0) {
         ## Character date format
         ttimestamp <- as.POSIXct(strptime(head(ttmp[,1]), format = "%Y. %B %d. %T"))
     } else {
         ## Numeric date format
         ttimestamp <- as.POSIXct(gsub("\\.","-",ttmp[,1]))
-    haz.xts <- c(haz.xts, xts(ttmp[,2], ttimestamp))
+    haz.xts <- c(haz.xts, xts(ttdata, ttimestamp))
     }
 }
 
